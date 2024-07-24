@@ -1,8 +1,8 @@
-// import userRouter from "./userRouter.js";
+import userRouter from "./userRouter.js"
 
 export default [
   {
     path: "api/v1/users",
-    // middlewares: [userRouter],
+    middlewares: [userRouter],
   },
 ];
