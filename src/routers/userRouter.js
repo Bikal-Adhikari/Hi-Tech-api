@@ -3,6 +3,8 @@ import { newUserValidation } from "../middlewares/joiValidation.js";
 import { insertUser } from "../models/user/userModel.js";
 import { v4 as uuidv4 } from "uuid";
 import { hashPassword } from "../utils/bcrypt.js";
+import { emailVerificationMail } from "../email/nodemailer.js";
+import { insertSession } from "../models/session/sessionModel.js";
 
 const router = express.Router();
 
@@ -24,6 +26,7 @@ router.post("/", newUserValidation, async (req, res, next) => {
       const obj = {
         token,
         associate: user.email,
+        type: "email-verification",
       };
 
       const result = await insertSession(obj);
