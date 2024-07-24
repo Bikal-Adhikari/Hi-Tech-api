@@ -1,5 +1,7 @@
 import express from "express";
 import { newUserValidation } from "../middlewares/joiValidation.js";
+import { insertUser } from "../models/user/userModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
 
