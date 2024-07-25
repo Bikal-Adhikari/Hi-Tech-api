@@ -27,7 +27,7 @@ export const emailVerificationMail = ({ email, fName, url }) => {
     from: `"Hi-Tech Store" <${process.env.SMTP_EMAIL}>`, // sender address
     to: email, // list of receivers
     subject: "Action Required", // Subject line
-    text: `Hellow there, please follow the link to verify you account ${url}`, // plain text body
+    text: `Hello there, please follow the link to verify you account ${url}`, // plain text body
     html: `
     Hello ${fName},
 <br />
