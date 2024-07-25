@@ -8,7 +8,7 @@ import { insertSession } from "../models/session/sessionModel.js";
 
 const router = express.Router();
 
-router.get("/", req, res, (next) => {
+router.get("/", (req, res, next) => {
   try {
   } catch (error) {}
 });
