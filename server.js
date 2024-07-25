@@ -5,15 +5,15 @@ import morgan from "morgan";
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// import { connectDb } from "./src/config/dbConfig.js";
-import routers from "./src/routers/routers.js";
-// connectDb();
+import { connectDb } from "./src/config/dbconfig.js";
+connectDb();
 
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+import routers from "./src/routers/routers.js";
 routers.forEach(({ path, middlewares }) => app.use(path, ...middlewares));
 
 app.get("/", (req, res, next) => {
