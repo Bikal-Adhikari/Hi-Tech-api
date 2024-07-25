@@ -15,6 +15,7 @@ router.get("/", (req, res, next) => {
 
 router.post("/", newUserValidation, async (req, res, next) => {
   try {
+    console.log(req.body);
     // encrypt password
     req.body.password = hashPassword(req.body.password);
 
