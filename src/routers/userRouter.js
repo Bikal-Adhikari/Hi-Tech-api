@@ -5,10 +5,12 @@ import { v4 as uuidv4 } from "uuid";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
 import { emailVerificationMail } from "../email/nodemailer.js";
 import {
+  deleteManySession,
   deleteSession,
   insertSession,
 } from "../models/session/sessionModel.js";
 import { getTokens } from "../utils/jwt.js";
+import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -133,6 +135,29 @@ router.post("/login", async (req, res, next) => {
     res.json({
       status: "error",
       message: message || "Invalid login details",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// logout user
+router.delete("/logout", auth, async (req, res, next) => {
+  try {
+    const { email } = req.userInfo;
+
+    await updateUser(
+      {
+        email,
+      },
+      { refreshJWT: "" }
+    );
+
+    await deleteManySession({ associate: email });
+
+    res.json({
+      status: "success",
+      message: "Logged out successfully",
     });
   } catch (error) {
     next(error);
