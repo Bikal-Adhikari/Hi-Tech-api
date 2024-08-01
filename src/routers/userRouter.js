@@ -3,7 +3,11 @@ import { newUserValidation } from "../middlewares/joiValidation.js";
 import { getAUser, insertUser, updateUser } from "../models/user/userModel.js";
 import { v4 as uuidv4 } from "uuid";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
-import { accountUpdatedNotification, emailVerificationMail, sendOtpMail } from "../email/nodemailer.js";
+import {
+  accountUpdatedNotification,
+  emailVerificationMail,
+  sendOtpMail,
+} from "../email/nodemailer.js";
 import {
   deleteManySession,
   deleteSession,
@@ -78,7 +82,7 @@ router.post("/user-verification", async (req, res, next) => {
       const result = await updateUser(
         { email: e },
         {
-          staus: "active",
+          status: "active",
           isEmailVerified: true,
         }
       );
