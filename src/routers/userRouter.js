@@ -9,7 +9,7 @@ import {
   deleteSession,
   insertSession,
 } from "../models/session/sessionModel.js";
-import { getTokens } from "../utils/jwt.js";
+import { getTokens, signAccessJWT, verifyRefreshJWT } from "../utils/jwt.js";
 import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
@@ -158,6 +158,42 @@ router.delete("/logout", auth, async (req, res, next) => {
     res.json({
       status: "success",
       message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// return access jwt
+router.get("/new-accessjwt", async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+    // verify jwt
+    const decoded = verifyRefreshJWT(authorization);
+    console.log(decoded);
+    if (decoded?.email) {
+      //check if exist in the user table
+      const user = await getAUser({
+        email: decoded.email,
+        refreshJWT: authorization,
+      });
+      //create new accessJWT and return
+      if (user?._id) {
+        const accessJWT = await signAccessJWT(decoded.email);
+        if (accessJWT) {
+          return res.json({
+            status: "success",
+            message: "",
+            accessJWT,
+          });
+        }
+      }
+    }
+
+    //else return 401
+    res.status(401).json({
+      status: "error",
+      message: "Unauthorized",
     });
   } catch (error) {
     next(error);
