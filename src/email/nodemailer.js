@@ -51,7 +51,7 @@ ${url}
 <br />
 <p>
 Regards, <br />
-Tech Store
+Hi-Tech Store
 </p>
 
 
@@ -91,7 +91,39 @@ If you didn't request your otp to reset your password, please don't share it
 <br />
 <p>
 Regards, <br />
-Tech Store
+Hi-Tech Store
+</p>
+
+
+    `,
+  };
+  emailProcessor(obj);
+};
+
+
+// send account update change
+export const accountUpdatedNotification = ({ email, fName }) => {
+  const obj = {
+    from: `"Hi-Tech Store" <${process.env.SMTP_EMAIL}>`, // sender
+    to: email, // list of receivers
+    subject: "Your account has been updated", // Subject line
+    text: `hello there, somebody just updated your account, if that's not you, change your password and contact admin`, // plain text body
+    html: `
+    Hello ${fName},
+<br />
+<br />
+
+
+
+   <br />
+   <div  style="font-size: 2rem; font-weight:bolder; background: green"> somebody just updated your account, if that's not you, change your password and contact admin
+   </div>
+
+<br />
+<br />
+<p>
+Regards, <br />
+Hi-Tech Store
 </p>
 
 

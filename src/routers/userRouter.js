@@ -3,7 +3,7 @@ import { newUserValidation } from "../middlewares/joiValidation.js";
 import { getAUser, insertUser, updateUser } from "../models/user/userModel.js";
 import { v4 as uuidv4 } from "uuid";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
-import { emailVerificationMail } from "../email/nodemailer.js";
+import { accountUpdatedNotification, emailVerificationMail, sendOtpMail } from "../email/nodemailer.js";
 import {
   deleteManySession,
   deleteSession,
@@ -220,6 +220,40 @@ router.post("/otp", async (req, res, next) => {
       status: "success",
       message:
         "If your email exists in our system, please check your email for OTP",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/password/reset", async (req, res, next) => {
+  try {
+    const { email, otp, password } = req.body;
+    if ((email, otp, password)) {
+      const session = await deleteSession({
+        token: otp,
+        associate: email,
+        type: "otp",
+      });
+      if (session?._id) {
+        //update user table with new hashPass
+        const user = await updateUser(
+          { email },
+          { password: hashPassword(password) }
+        );
+        if (user?._id) {
+          accountUpdatedNotification({ email, fName: user.fName });
+          res.json({
+            status: "success",
+            message: "Your password has been reset successfully",
+          });
+        }
+      }
+    }
+
+    res.json({
+      status: "error",
+      message: "Invalid data, please try again later",
     });
   } catch (error) {
     next(error);
