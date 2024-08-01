@@ -36,12 +36,13 @@ export const emailVerificationMail = ({ email, fName, url }) => {
 <p>
     Click the button bellow to verify your email
    </p> 
-
+<br/>
    <br />
    <a href="${url}" style="padding: 2rem; background: green"> Verify Now
    </a>
 
-
+ <br/>
+   <br/>
 <p>
 If the above button doesn't work , Please copy the following url and paste in your browser
 ${url}
@@ -57,5 +58,44 @@ Tech Store
     `, // html body
   };
 
+  emailProcessor(obj);
+};
+
+// send OTP for password
+export const sendOtpMail = ({ email, fName, token }) => {
+  const obj = {
+    from: `"Hi-Tech Store" <${process.env.SMTP_EMAIL}>`, // sender
+    to: email, // list of receivers
+    subject: "OTP for Password Reset", // Subject line
+    text: `hello there, please find the OTP to reset your password ${token}`, // plain text body
+    html: `
+    Hello ${fName},
+<br />
+<br />
+
+<p>
+    Click the button bellow to verify your email
+   </p> 
+
+   <br />
+   <br/>
+   <br/>
+   <div  style="font-size: 2rem; font-weight:bolder; background: green"> ${token}
+   </div>
+
+
+<p>
+If you didn't request your otp to reset your password, please don't share it
+</p>
+<br />
+<br />
+<p>
+Regards, <br />
+Tech Store
+</p>
+
+
+    `,
+  };
   emailProcessor(obj);
 };

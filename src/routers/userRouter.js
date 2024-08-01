@@ -11,6 +11,7 @@ import {
 } from "../models/session/sessionModel.js";
 import { getTokens, signAccessJWT, verifyRefreshJWT } from "../utils/jwt.js";
 import { auth } from "../middlewares/auth.js";
+import { otpGenerator } from "../utils/otpGenerator.js";
 
 const router = express.Router();
 
@@ -194,6 +195,31 @@ router.get("/new-accessjwt", async (req, res, next) => {
     res.status(401).json({
       status: "error",
       message: "Unauthorized",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/otp", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await getAUser({ email });
+    if (user?._id) {
+      const token = otpGenerator();
+
+      const session = await insertSession({
+        token,
+        associate: email,
+        type: "otp",
+      });
+      session?._id && sendOtpMail({ token, fName: user.fName, email });
+    }
+
+    res.json({
+      status: "success",
+      message:
+        "If your email exists in our system, please check your email for OTP",
     });
   } catch (error) {
     next(error);
