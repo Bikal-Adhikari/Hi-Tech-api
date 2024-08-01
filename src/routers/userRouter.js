@@ -19,9 +19,26 @@ import { otpGenerator } from "../utils/otpGenerator.js";
 
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
+router.get("/", auth, (req, res, next) => {
   try {
-  } catch (error) {}
+    const { userInfo } = req;
+
+    userInfo.refreshJWT = undefined;
+
+    userInfo?.status === "active"
+      ? res.json({
+          status: "success",
+          message: "",
+          userInfo,
+        })
+      : res.json({
+          status: "error",
+          message:
+            "your account has not been activated. Check your email to verify your account",
+        });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post("/", newUserValidation, async (req, res, next) => {
