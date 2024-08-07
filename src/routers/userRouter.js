@@ -45,22 +45,26 @@ router.get("/", auth, (req, res, next) => {
     next(error);
   }
 });
-router.get("/_id", (req, res, next) => {
+
+router.get("/:_id", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const userInfo = getAUserById(_id);
-    userInfo.password = undefined;
-    userInfo?.status === "active"
-      ? res.json({
-          status: "success",
-          message: "",
-          userInfo,
-        })
-      : res.json({
-          status: "error",
-          message:
-            "your account has not been activated. Check your email to verify your account",
-        });
+
+    const user = await getAUserById(_id);
+    if (user?._id) {
+      res.json({
+        status: "success",
+        message: "",
+        user,
+      });
+    }
+
+    if (!user?._id) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
   } catch (error) {
     next(error);
   }
