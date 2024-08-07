@@ -1,6 +1,11 @@
 import express from "express";
 import { newUserValidation } from "../middlewares/joiValidation.js";
-import { getAUser, insertUser, updateUser } from "../models/user/userModel.js";
+import {
+  getAUser,
+  getAUserById,
+  insertUser,
+  updateUser,
+} from "../models/user/userModel.js";
 import { v4 as uuidv4 } from "uuid";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
 import {
@@ -25,6 +30,26 @@ router.get("/", auth, (req, res, next) => {
 
     userInfo.refreshJWT = undefined;
 
+    userInfo?.status === "active"
+      ? res.json({
+          status: "success",
+          message: "",
+          userInfo,
+        })
+      : res.json({
+          status: "error",
+          message:
+            "your account has not been activated. Check your email to verify your account",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/_id", (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const userInfo = getAUserById(_id);
+    userInfo.password = undefined;
     userInfo?.status === "active"
       ? res.json({
           status: "success",
