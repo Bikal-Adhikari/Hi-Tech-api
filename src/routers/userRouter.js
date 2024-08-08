@@ -316,19 +316,22 @@ router.patch("/password/reset", async (req, res, next) => {
 });
 
 // update profile
-router.put("/profile/update", updateUserValidation, async (req, res, next) => {
+router.put("/profile/update", async (req, res, next) => {
   try {
     const { password, _id, ...rest } = req.body;
+
     const user = await getAUserById(_id);
+
     if (user._id) {
       const confirmPass = comparePassword(password, user.password);
       if (confirmPass) {
-        const user = await updateUserById(_id, rest);
-        if (user._id) {
+        const userInfo = await updateUserById(_id, rest);
+
+        if (userInfo?._id) {
           res.json({
             status: "success",
             message: "Your profile has been updated successfully",
-            user,
+            userInfo,
           });
         }
       }

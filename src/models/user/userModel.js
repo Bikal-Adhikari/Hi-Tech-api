@@ -12,9 +12,9 @@ export const getAUser = (filter) => {
   return userSchema.findOne(filter);
 };
 export const getAUserById = (_id) => {
-  return userSchema.findById(_id)
+  return userSchema.findById(_id);
 };
 
-export const updateUserById = ({ _id, obj }) => {
+export const updateUserById = (_id, obj) => {
   return userSchema.findByIdAndUpdate(_id, obj);
 };
