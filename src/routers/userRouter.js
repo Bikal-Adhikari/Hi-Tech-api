@@ -1,10 +1,14 @@
 import express from "express";
-import { newUserValidation } from "../middlewares/joiValidation.js";
+import {
+  newUserValidation,
+  updateUserValidation,
+} from "../middlewares/joiValidation.js";
 import {
   getAUser,
   getAUserById,
   insertUser,
   updateUser,
+  updateUserById,
 } from "../models/user/userModel.js";
 import { v4 as uuidv4 } from "uuid";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
@@ -51,6 +55,7 @@ router.get("/:_id", async (req, res, next) => {
     const { _id } = req.params;
 
     const user = await getAUserById(_id);
+    user.password = undefined;
     if (user?._id) {
       res.json({
         status: "success",
@@ -304,6 +309,32 @@ router.patch("/password/reset", async (req, res, next) => {
     res.json({
       status: "error",
       message: "Invalid data, please try again later",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// update profile
+router.put("/profile/update", updateUserValidation, async (req, res, next) => {
+  try {
+    const { password, _id, ...rest } = req.body;
+    const user = await getAUserById(_id);
+    if (user._id) {
+      const confirmPass = comparePassword(password, user.password);
+      if (confirmPass) {
+        const user = await updateUserById(_id, rest);
+        if (user._id) {
+          res.json({
+            status: "success",
+            message: "Your profile has been updated successfully",
+          });
+        }
+      }
+    }
+    res.json({
+      status: "error",
+      message: "Password do not match, try again with correct password",
     });
   } catch (error) {
     next(error);
