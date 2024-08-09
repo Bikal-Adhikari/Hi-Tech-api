@@ -32,7 +32,7 @@ router.get("/", auth, (req, res, next) => {
   try {
     const { userInfo } = req;
 
-    userInfo.refreshJWT = undefined;
+    // userInfo.refreshJWT = undefined;
 
     userInfo?.status === "active"
       ? res.json({
