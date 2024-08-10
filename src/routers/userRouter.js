@@ -31,6 +31,7 @@ const router = express.Router();
 router.get("/", auth, (req, res, next) => {
   try {
     const { userInfo } = req;
+    userInfo.password = undefined;
 
     // userInfo.refreshJWT = undefined;
 
@@ -217,7 +218,7 @@ router.delete("/logout", auth, async (req, res, next) => {
   }
 });
 
-// return access jwt
+// Route for new access JWT
 router.get("/new-accessjwt", async (req, res, next) => {
   try {
     const { authorization } = req.headers;
