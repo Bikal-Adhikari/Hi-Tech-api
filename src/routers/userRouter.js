@@ -56,20 +56,19 @@ router.get("/:_id", async (req, res, next) => {
 
     const user = await getAUserById(_id);
     user.password = undefined;
+
     if (user?._id) {
-      res.json({
+      return res.json({
         status: "success",
         message: "",
         user,
       });
     }
 
-    if (!user?._id) {
-      return res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
-    }
+    return res.status(404).json({
+      status: "error",
+      message: "User not found",
+    });
   } catch (error) {
     next(error);
   }
@@ -122,14 +121,13 @@ router.post("/", newUserValidation, async (req, res, next) => {
 router.post("/user-verification", async (req, res, next) => {
   try {
     const { c, e } = req.body;
-    //delete session data
 
     const session = await deleteSession({
       token: c,
       associate: e,
     });
+
     if (session?._id) {
-      //update user table
       const result = await updateUser(
         { email: e },
         {
@@ -138,7 +136,6 @@ router.post("/user-verification", async (req, res, next) => {
         }
       );
       if (result?._id) {
-        // send user an email
         return res.json({
           status: "success",
           message: "Your account has been verified. You may sign in now",
@@ -146,7 +143,7 @@ router.post("/user-verification", async (req, res, next) => {
       }
     }
 
-    res.json({
+    return res.json({
       status: "error",
       message: "Invalid link, contact admin",
     });
@@ -291,14 +288,13 @@ router.patch("/password/reset", async (req, res, next) => {
         type: "otp",
       });
       if (session?._id) {
-        //update user table with new hashPass
         const user = await updateUser(
           { email },
           { password: hashPassword(password) }
         );
         if (user?._id) {
           accountUpdatedNotification({ email, fName: user.fName });
-          res.json({
+          return res.json({
             status: "success",
             message: "Your password has been reset successfully",
           });
@@ -306,7 +302,7 @@ router.patch("/password/reset", async (req, res, next) => {
       }
     }
 
-    res.json({
+    return res.json({
       status: "error",
       message: "Invalid data, please try again later",
     });
@@ -322,23 +318,33 @@ router.put("/profile/update", async (req, res, next) => {
 
     const user = await getAUserById(_id);
 
-    if (user._id) {
-      const confirmPass = comparePassword(password, user.password);
-      if (confirmPass) {
-        const userInfo = await updateUserById(_id, rest);
-
-        if (userInfo?._id) {
-          res.json({
-            status: "success",
-            message: "Your profile has been updated successfully",
-            userInfo,
-          });
-        }
-      }
+    if (!user._id) {
+      return res.json({
+        status: "error",
+        message: "User not found",
+      });
     }
-    res.json({
-      status: "error",
-      message: "Password do not match, try again with correct password",
+
+    const confirmPass = comparePassword(password, user.password);
+    if (!confirmPass) {
+      return res.json({
+        status: "error",
+        message: "Password does not match, try again with correct password",
+      });
+    }
+
+    const userInfo = await updateUserById(_id, rest);
+    if (!userInfo?._id) {
+      return res.json({
+        status: "error",
+        message: "Failed to update profile, please try again",
+      });
+    }
+
+    return res.json({
+      status: "success",
+      message: "Your profile has been updated successfully",
+      userInfo,
     });
   } catch (error) {
     next(error);
