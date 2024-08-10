@@ -9,6 +9,7 @@ import {
   insertUser,
   updateUser,
   updateUserById,
+  updateUserPassword,
 } from "../models/user/userModel.js";
 import { v4 as uuidv4 } from "uuid";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
@@ -347,6 +348,55 @@ router.put("/profile/update", async (req, res, next) => {
       message: "Your profile has been updated successfully",
       userInfo,
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Password change
+router.patch("/password/change", async (req, res, next) => {
+  try {
+    const { email, oldPassword, newPassword, confirmNewPassword } = req.body;
+
+    // Check if new passwords match
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({
+        status: "error",
+        message: "New passwords do not match!",
+      });
+    }
+
+    // Fetch user by email from the request body
+    const user = await getAUser({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found!",
+      });
+    }
+
+    // Verify old password
+    const isMatch = comparePassword(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        status: "error",
+        message: "Old password is incorrect!",
+      });
+    }
+
+    // Hash the new password
+    if (isMatch) {
+      const password = hashPassword(newPassword);
+      await updateUserPassword({ email }, { password });
+
+      return res.status(200).json({
+        status: "success",
+        message: "Password updated successfully!",
+      });
+    }
+
+    // Update user with new password
   } catch (error) {
     next(error);
   }

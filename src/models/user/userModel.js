@@ -18,3 +18,7 @@ export const getAUserById = (_id) => {
 export const updateUserById = (_id, obj) => {
   return userSchema.findByIdAndUpdate(_id, obj);
 };
+
+export const updateUserPassword = (filter, password) => {
+  return userSchema.findOneAndUpdate(filter, password);
+};
