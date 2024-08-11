@@ -13,6 +13,9 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+import filePath from "path";
+const __dirname = filePath.resolve();
+app.use(express.static(filePath.join(__dirname, "public")));
 
 import routers from "./src/routers/routers.js";
 
