@@ -26,6 +26,7 @@ import {
 import { getTokens, signAccessJWT, verifyRefreshJWT } from "../utils/jwt.js";
 import { auth } from "../middlewares/auth.js";
 import { otpGenerator } from "../utils/otpGenerator.js";
+import multerUpload from "../utils/multer.js";
 
 const router = express.Router();
 
@@ -76,51 +77,41 @@ router.get("/:_id", async (req, res, next) => {
   }
 });
 
-router.post("/", newUserValidation, async (req, res, next) => {
-  try {
-    // encrypt password
-    req.body.password = hashPassword(req.body.password);
+// image upload
+router.patch(
+  "/uploadProfilePic",
+  auth,
+  multerUpload.single("profilePic"), // Use single for uploading a single file
+  async (req, res, next) => {
+    try {
+      if (req.file) {
+        const profilePicPath = req.file.path.replace("public", "");
 
-    const user = await insertUser(req.body);
+        // Use req.user._id to get the authenticated user's ID
+        const { _id } = req.userInfo;
 
-    if (user?._id) {
-      // create unique url and add in the database
-      const token = uuidv4();
-      const obj = {
-        token,
-        associate: user.email,
-        type: "email-verification",
-      };
+        // Update the user's profile picture in the database
+        // Replace this with your actual update logic
+        const result = await updateUserById(_id, profilePicPath);
 
-      const result = await insertSession(obj);
-      if (result?._id) {
-        //process for sending email
-
-        emailVerificationMail({
-          email: user.email,
-          fName: user.fName,
-          url:
-            process.env.FE_ROOT_URL + `/verify-user?c=${token}&e=${user.email}`,
-        });
         return res.json({
           status: "success",
-          message:
-            "We have send you an email with instructions to verify your  account. Please check email/junk to verify your account",
+          message: "Profile picture updated successfully",
+          data: result,
+        });
+      } else {
+        return res.status(400).json({
+          status: "error",
+          message: "No file uploaded",
         });
       }
+    } catch (error) {
+      next(error);
     }
-
-    res.json({
-      status: "error",
-      message: "Error Unable to create an account, Contact administration",
-    });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-// image upload
-router.post("/", newUserValidation, async (req, res, next) => {
+router.post("/uploadProfilePic", newUserValidation, async (req, res, next) => {
   try {
     // encrypt password
     req.body.password = hashPassword(req.body.password);
