@@ -45,6 +45,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    profilePic: {
+      type: String, // Stores the path or URL of the profile picture
+      trim: true,
+      default: "",
+    },
     address: {
       type: String,
       default: "",

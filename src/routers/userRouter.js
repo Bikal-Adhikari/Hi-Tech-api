@@ -80,7 +80,6 @@ router.get("/:_id", async (req, res, next) => {
 // image upload
 router.patch(
   "/uploadProfilePic",
-  auth,
   multerUpload.single("profilePic"), // Use single for uploading a single file
   async (req, res, next) => {
     try {
@@ -111,7 +110,7 @@ router.patch(
   }
 );
 
-router.post("/uploadProfilePic", newUserValidation, async (req, res, next) => {
+router.post("/", newUserValidation, async (req, res, next) => {
   try {
     // encrypt password
     req.body.password = hashPassword(req.body.password);
