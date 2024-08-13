@@ -79,19 +79,20 @@ router.get("/:_id", async (req, res, next) => {
 
 // image upload
 router.patch(
-  "/uploadProfilePic",
+  "/uploadProfilePic/:_id",
   multerUpload.single("profilePic"), // Multer middleware
   async (req, res, next) => {
     try {
-      console.log("=============================", req.file);
       if (req.file) {
         const profilePicPath = req.file.path.replace("public", "");
 
         // Extract the user ID from the request body
-        const { _id } = req.body;
+        const { _id } = req.params;
+        // Create an object with the field you want to update
+        const updateData = { profilePic: profilePicPath };
 
         // Update the user's profile picture in the database
-        const result = await updateUserById(_id, profilePicPath);
+        const result = await updateUserById(_id, updateData);
 
         return res.json({
           status: "success",

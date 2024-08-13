@@ -1,7 +1,8 @@
 import multer from "multer";
+import path from "path";
 
 // Define the folder path where profile pictures will be stored
-const imgFolderPath = "public/img/profile-pics";
+const imgFolderPath = path.join("public", "img", "profile-pics");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

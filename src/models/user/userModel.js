@@ -16,7 +16,7 @@ export const getAUserById = (_id) => {
 };
 
 export const updateUserById = (_id, obj) => {
-  return userSchema.findByIdAndUpdate(_id, obj);
+  return userSchema.findByIdAndUpdate(_id, obj, { new: true });
 };
 
 export const updateUserPassword = (filter, password) => {
