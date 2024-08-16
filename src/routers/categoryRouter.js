@@ -1,16 +1,19 @@
 import express from "express";
-import { getACategory, getActiveCategories } from "../models/category/categoryModel.js";
+import {
+  getACategory,
+  getActiveCategories,
+} from "../models/category/categoryModel.js";
 
 const router = express.Router();
 
-// Route to get all active products
+// Route to get all active categories
 router.get("/", async (req, res, next) => {
   try {
-    const products = await getActiveCategories();
+    const categories = await getActiveCategories();
     res.json({
       status: "success",
       message: "",
-      products,
+      categories,
     });
   } catch (error) {
     next(error);
@@ -21,19 +24,19 @@ router.get("/", async (req, res, next) => {
 router.get("/:_id", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const product = await getACategory(_id);
+    const category = await getACategory(_id);
 
-    if (product.status !== "active") {
+    if (category.status !== "active") {
       return res.status(404).json({
         status: "error",
-        message: "Product not found or inactive",
+        message: "category not found or inactive",
       });
     }
 
     res.json({
       status: "success",
       message: "",
-      product,
+      category,
     });
   } catch (error) {
     next(error);
