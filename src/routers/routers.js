@@ -17,7 +17,7 @@ export default [
     middlewares: [categoryRouter],
   },
   {
-    path: "/api/v1/create-stripe-payments",
+    path: "/api/v1/payment",
     middlewares: [paymentRouter],
   },
 ];
