@@ -2,6 +2,7 @@ import userRouter from "./userRouter.js";
 import productRouter from "./productRouter.js";
 import categoryRouter from "./categoryRouter.js";
 import paymentRouter from "./paymentRouter.js";
+import orderRouter from "./orderRouter.js";
 
 export default [
   {
@@ -19,5 +20,9 @@ export default [
   {
     path: "/api/v1/payment",
     middlewares: [paymentRouter],
+  },
+  {
+    path: "/api/v1/order",
+    middlewares: [orderRouter],
   },
 ];
