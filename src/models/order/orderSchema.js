@@ -6,6 +6,11 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["Pending", "Shipped", "Delivered"],
+      default: "Pending",
+    },
     items: [
       {
         name: {
