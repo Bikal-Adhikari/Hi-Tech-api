@@ -1,5 +1,10 @@
 import express from "express";
-import { addNewOrder, getUserOrder, updateOrderStatus } from "../models/order/orderModel.js";
+import {
+  addNewOrder,
+  getSingleOrder,
+  getUserOrder,
+  updateOrderStatus,
+} from "../models/order/orderModel.js";
 const router = express.Router();
 
 router.post("/", async (req, res, next) => {
@@ -52,6 +57,21 @@ router.get("/", async (req, res, next) => {
       status: "success",
       message: "Order fetched successfully",
       orders,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/:_id", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+
+    const order = await getSingleOrder(_id);
+
+    res.status(201).json({
+      status: "success",
+      message: "Order fetched successfully",
+      order,
     });
   } catch (error) {
     next(error);
