@@ -3,6 +3,7 @@ import productRouter from "./productRouter.js";
 import categoryRouter from "./categoryRouter.js";
 import paymentRouter from "./paymentRouter.js";
 import orderRouter from "./orderRouter.js";
+import reviewRouter from "./reviewRouter.js";
 
 export default [
   {
@@ -24,5 +25,9 @@ export default [
   {
     path: "/api/v1/order",
     middlewares: [orderRouter],
+  },
+  {
+    path: "/api/v1/review",
+    middlewares: [reviewRouter],
   },
 ];
