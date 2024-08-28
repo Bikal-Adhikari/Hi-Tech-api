@@ -7,6 +7,6 @@ export const postNewReview = (obj) => {
 export const getReviewByUser = (userId) => {
   return reviewSchema.find({ userId });
 };
-export const getAllReview = () => {
-  return reviewSchema.find();
+export const getAllReview = (productId) => {
+  return reviewSchema.find({ productId });
 };

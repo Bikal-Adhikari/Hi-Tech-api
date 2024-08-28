@@ -37,7 +37,9 @@ router.post("/", async (req, res, next) => {
 
 router.get("/all", async (req, res, next) => {
   try {
-    const reviews = await getAllReview();
+    const { productId } = req.query;
+    const reviews = await getAllReview(productId);
+   
     res.status(200).json({
       status: "success",
       message: "Reviews fetched successfully",
