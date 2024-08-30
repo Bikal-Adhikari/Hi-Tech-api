@@ -62,7 +62,7 @@ export const userServiceValidation = (req, res, next) => {
     email: EMAIL_REQ,
     phone: PHONE,
     services: STR_REQUIRED,
-    date: DATE_REQ,
+    datePreferred: DATE_REQ,
     message: LONG_STR,
   });
   return joiValidator({ req, res, next, schema });
