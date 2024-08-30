@@ -15,17 +15,15 @@ const serviceSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
-      index: 1,
       required: true,
     },
-    service: {
-      type: String, 
-      required:true,
+    services: {
+      type: String,
+      required: true,
     },
     datePreferred: {
       type: Date,
-      required:true,
+      required: true,
     },
     message: {
       type: String,

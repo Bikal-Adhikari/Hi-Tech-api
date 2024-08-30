@@ -132,17 +132,16 @@ Hi-Tech Store
   emailProcessor(obj);
 };
 
-
 // Service requested operation
-export const serviceRequestedNotification = ({ email, name, service }) => {
+export const serviceRequestedNotification = ({ email, name, services }) => {
   const obj = {
     from: `"Hi-Tech Store" <${process.env.SMTP_EMAIL}>`, // sender
     to: email, // list of receivers
-    subject: `Request for ${service} Service`,
-    text: `Hello ${name},\n\nSomeone has just requested the ${service} service on your account. If this wasn't you, please contact our support team immediately.\n\nBest regards,\nHi-Tech Store Support Team`,
+    subject: `Request for ${services} Service`,
+    text: `Hello ${name},\n\nSomeone has just requested the ${services} service on your account. If this wasn't you, please contact our support team immediately.\n\nBest regards,\nHi-Tech Store Support Team`,
     html: `
       <p>Hello ${name},</p>
-      <p>We have received a request for the <strong>${service}</strong> service on your account.</p>
+      <p>We have received a request for the <strong>${services}</strong> service on your account.</p>
       <p>If you did not make this request, please contact our support team immediately to secure your account.</p>
       <div style="margin-top: 20px; padding: 10px; background-color: #f0f0f0; border-radius: 5px; font-size: 1.1rem;">
         <p style="margin: 0;">Hi-Tech Store Support Team</p>
