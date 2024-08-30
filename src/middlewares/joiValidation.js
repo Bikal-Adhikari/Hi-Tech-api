@@ -55,3 +55,15 @@ export const updateUserValidation = (req, res, next) => {
   });
   return joiValidator({ req, res, next, schema });
 };
+
+export const userServiceValidation = (req, res, next) => {
+  const schema = Joi.object({
+    name: STR_REQUIRED,
+    email: EMAIL_REQ,
+    phone: PHONE,
+    services: STR_REQUIRED,
+    date: DATE_REQ,
+    message: LONG_STR,
+  });
+  return joiValidator({ req, res, next, schema });
+};

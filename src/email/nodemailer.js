@@ -1,3 +1,4 @@
+import { text } from "express";
 import nodemailer from "nodemailer";
 
 const emailProcessor = async (mailBodyObj) => {
@@ -100,7 +101,6 @@ Hi-Tech Store
   emailProcessor(obj);
 };
 
-
 // send account update change
 export const accountUpdatedNotification = ({ email, fName }) => {
   const obj = {
@@ -129,5 +129,28 @@ Hi-Tech Store
 
     `,
   };
+  emailProcessor(obj);
+};
+
+
+// Service requested operation
+export const serviceRequestedNotification = ({ email, name, service }) => {
+  const obj = {
+    from: `"Hi-Tech Store" <${process.env.SMTP_EMAIL}>`, // sender
+    to: email, // list of receivers
+    subject: `Request for ${service} Service`,
+    text: `Hello ${name},\n\nSomeone has just requested the ${service} service on your account. If this wasn't you, please contact our support team immediately.\n\nBest regards,\nHi-Tech Store Support Team`,
+    html: `
+      <p>Hello ${name},</p>
+      <p>We have received a request for the <strong>${service}</strong> service on your account.</p>
+      <p>If you did not make this request, please contact our support team immediately to secure your account.</p>
+      <div style="margin-top: 20px; padding: 10px; background-color: #f0f0f0; border-radius: 5px; font-size: 1.1rem;">
+        <p style="margin: 0;">Hi-Tech Store Support Team</p>
+        <p style="margin: 0;"><a href="mailto:support@hitechstore.com" style="text-decoration: none; color: #007bff;">support@hitechstore.com</a></p>
+      </div>
+      <p style="font-size: 0.9rem; color: #666;">If you have any questions, feel free to reply to this email or contact our support team.</p>
+    `,
+  };
+
   emailProcessor(obj);
 };
