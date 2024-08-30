@@ -4,6 +4,7 @@ import categoryRouter from "./categoryRouter.js";
 import paymentRouter from "./paymentRouter.js";
 import orderRouter from "./orderRouter.js";
 import reviewRouter from "./reviewRouter.js";
+import serviceRouter from "./serviceRouter.js";
 
 export default [
   {
@@ -29,5 +30,9 @@ export default [
   {
     path: "/api/v1/review",
     middlewares: [reviewRouter],
+  },
+  {
+    path: "/api/v1/service",
+    middlewares: [serviceRouter],
   },
 ];
