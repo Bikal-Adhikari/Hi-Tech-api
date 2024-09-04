@@ -67,3 +67,12 @@ export const userServiceValidation = (req, res, next) => {
   });
   return joiValidator({ req, res, next, schema });
 };
+export const userContactValidation = (req, res, next) => {
+  const schema = Joi.object({
+    name: STR_REQUIRED,
+    email: EMAIL_REQ,
+    subject: STR_REQUIRED,
+    message: LONG_STR,
+  });
+  return joiValidator({ req, res, next, schema });
+};

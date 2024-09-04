@@ -153,3 +153,26 @@ export const serviceRequestedNotification = ({ email, name, services }) => {
 
   emailProcessor(obj);
 };
+
+export const contactFormReply = ({ email, name, subject, message }) => {
+  const obj = {
+    from: `"Hi-Tech Store" <${process.env.SMTP_EMAIL}>`, // sender
+    to: email, // list of receivers
+    subject: `Re: ${subject}`,
+    text: `Hello ${name},\n\nThank you for reaching out to us with your message. We have received your inquiry and will get back to you as soon as possible.\n\nYour message:\n${message}\n\nBest regards,\nHi-Tech Store Support Team`,
+    html: `
+      <p>Hello ${name},</p>
+      <p>Thank you for reaching out to us. We have received your message and our team will get back to you shortly.</p>
+      <p><strong>Your message:</strong></p>
+      <p style="margin: 20px 0; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #007bff;">${message}</p>
+      <p>If you have any further questions or need immediate assistance, feel free to reply to this email or contact our support team directly.</p>
+      <div style="margin-top: 20px; padding: 10px; background-color: #f0f0f0; border-radius: 5px; font-size: 1.1rem;">
+        <p style="margin: 0;">Hi-Tech Store Support Team</p>
+        <p style="margin: 0;"><a href="mailto:support@hitechstore.com" style="text-decoration: none; color: #007bff;">support@hitechstore.com</a></p>
+      </div>
+      <p style="font-size: 0.9rem; color: #666;">This is an automated response confirming the receipt of your message. We will get back to you shortly.</p>
+    `,
+  };
+
+  emailProcessor(obj);
+};
