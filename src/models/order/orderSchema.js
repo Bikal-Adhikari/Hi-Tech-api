@@ -8,7 +8,13 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Shipped", "Delivered"],
+      enum: [
+        "Pending", // Initial status
+        "On the way", // 1-5 days
+        "Coming your way", // 6-9 days
+        "Deliver today", // 10 days
+        "Delivered", // Beyond 10 days
+      ],
       default: "Pending",
     },
     items: [

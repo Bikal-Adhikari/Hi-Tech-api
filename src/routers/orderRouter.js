@@ -7,6 +7,22 @@ import {
 } from "../models/order/orderModel.js";
 const router = express.Router();
 
+// Function to calculate and return the correct status based on the order age
+const calculateOrderStatus = (orderAgeInDays) => {
+  if (orderAgeInDays >= 1 && orderAgeInDays <= 5) {
+    return "On the way";
+  } else if (orderAgeInDays >= 6 && orderAgeInDays <= 9) {
+    return "Coming your way";
+  } else if (orderAgeInDays === 10) {
+    return "Deliver today";
+  } else if (orderAgeInDays > 10) {
+    return "Delivered";
+  } else {
+    return "Processing";
+  }
+};
+
+// Route to add a new order
 router.post("/", async (req, res, next) => {
   try {
     const { user, items, totalAmount, shippingAddress, billingAddress } =
@@ -27,6 +43,8 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
+
+// Route to get all user orders with automatic status updates
 router.get("/", async (req, res, next) => {
   try {
     const { userId } = req.query;
@@ -34,41 +52,43 @@ router.get("/", async (req, res, next) => {
 
     const orders = await getUserOrder(userId);
 
-    const updatedOrders = orders.map((order) => {
-      const orderAgeInDays = Math.floor(
-        (currentDate - new Date(order.createdAt)) / (1000 * 60 * 60 * 24)
-      );
+    // Loop through each order and update the status if necessary
+    const updatedOrders = await Promise.all(
+      orders.map(async (order) => {
+        const orderAgeInDays = Math.floor(
+          (currentDate - new Date(order.createdAt)) / (1000 * 60 * 60 * 24)
+        );
 
-      if (orderAgeInDays > 10) {
-        // If order is older than 10 days, set status to 'Delivered'
-        if (order.status !== "Delivered") {
-          order.status = "Delivered";
+        const newStatus = calculateOrderStatus(orderAgeInDays);
+
+        if (order.status !== newStatus) {
+          // Update the status in the database
+          order.status = newStatus;
+          await updateOrderStatus(order._id, { status: newStatus });
         }
-      }
-      return order;
-    });
 
-    if (updatedOrders?._id) {
-      const orders = await updateOrderStatus(_id, updatedOrders);
-      return orders;
-    }
+        return order;
+      })
+    );
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
-      message: "Order fetched successfully",
-      orders,
+      message: "Orders fetched and updated successfully",
+      orders: updatedOrders,
     });
   } catch (error) {
     next(error);
   }
 });
+
+// Route to get a single order by ID
 router.get("/:_id", async (req, res, next) => {
   try {
     const { _id } = req.params;
 
     const order = await getSingleOrder(_id);
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       message: "Order fetched successfully",
       order,
