@@ -11,6 +11,6 @@ export const getSingleOrder = (_id) => {
   return orderSchema.findById(_id);
 };
 
-export const updateOrderStatus = (_id) => {
+export const updateOrderStatus = (_id, obj) => {
   return orderSchema.findByIdAndUpdate(_id, obj);
 };
