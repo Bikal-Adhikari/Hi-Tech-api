@@ -5,8 +5,7 @@ import morgan from "morgan";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
-
-import { connectDb } from "./src/config/dbConfig.js";
+import { connectDb } from "./src/config/dbconfig.js";
 connectDb();
 
 app.use(cors());
@@ -17,7 +16,7 @@ import filePath from "path";
 const __dirname = filePath.resolve();
 app.use(express.static(filePath.join(__dirname, "public")));
 
-import routers from ".src/routers/routers.js";
+import routers from "./src/routers/routers.js";
 
 routers.forEach(({ path, middlewares }) => app.use(path, ...middlewares));
 

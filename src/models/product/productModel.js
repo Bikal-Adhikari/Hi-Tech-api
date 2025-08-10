@@ -1,4 +1,4 @@
-import ProductSchema from "./ProductSchema.js";
+import ProductSchema from "./productSchema.js";
 
 export const getActiveProducts = () => {
   return ProductSchema.find({ status: "active" });
